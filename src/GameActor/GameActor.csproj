@@ -113,6 +113,10 @@
       <Project>{763E8103-7AC1-4940-882E-69B7A6B66D73}</Project>
       <Name>GameActor.Interfaces</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GameCell.Interfaces\GameCell.Interfaces.csproj">
+      <Project>{656c11a2-1fe3-45a0-8067-4cf4b39f6864}</Project>
+      <Name>GameCell.Interfaces</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.ServiceFabric.Actors.2.5.216\build\Microsoft.ServiceFabric.Actors.targets" Condition="Exists('..\packages\Microsoft.ServiceFabric.Actors.2.5.216\build\Microsoft.ServiceFabric.Actors.targets')" />

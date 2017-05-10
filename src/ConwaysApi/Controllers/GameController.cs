@@ -4,16 +4,16 @@ using System.Web.Http;
 namespace ConwaysApi.Controllers
 {
     [ServiceRequestActionFilter]
-    class GameController : ApiController 
+    public class GameController : ApiController 
     {
         public string Get()
         {
             return "the game";
         }
 
-        public void Post([FromBody]string gameName)
+        public void Post(string name, int rows, int columns)
         {
-            var gameActor = new GameActorOrchestrator(gameName);
+            var gameActor = new GameActorOrchestrator(name, rows, columns);
             gameActor.Initiate();
         }
     }

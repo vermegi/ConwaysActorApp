@@ -3,5 +3,6 @@
   <Parameters>
     <Parameter Name="ConwaysApi_InstanceCount" Value="1" />
     <Parameter Name="GameActorService_PartitionCount" Value="1" />
+    <Parameter Name="GameCellActorService_PartitionCount" Value="1" />
   </Parameters>
 </Application>
