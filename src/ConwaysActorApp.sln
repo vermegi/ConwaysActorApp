@@ -7,6 +7,10 @@ Project("{A07B5EB6-E848-4116-A8D0-A826331D98C6}") = "ConwaysActorApp", "ConwaysA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConwaysApi", "ConwaysApi\ConwaysApi.csproj", "{4DD722CB-4BFA-4DFC-9B74-57C7563F5801}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameActor", "GameActor\GameActor.csproj", "{24F88DC8-D388-43DF-8F84-D7E92D54252B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameActor.Interfaces", "GameActor.Interfaces\GameActor.Interfaces.csproj", "{763E8103-7AC1-4940-882E-69B7A6B66D73}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -23,6 +27,14 @@ Global
 		{4DD722CB-4BFA-4DFC-9B74-57C7563F5801}.Debug|x64.Build.0 = Debug|x64
 		{4DD722CB-4BFA-4DFC-9B74-57C7563F5801}.Release|x64.ActiveCfg = Release|x64
 		{4DD722CB-4BFA-4DFC-9B74-57C7563F5801}.Release|x64.Build.0 = Release|x64
+		{24F88DC8-D388-43DF-8F84-D7E92D54252B}.Debug|x64.ActiveCfg = Debug|x64
+		{24F88DC8-D388-43DF-8F84-D7E92D54252B}.Debug|x64.Build.0 = Debug|x64
+		{24F88DC8-D388-43DF-8F84-D7E92D54252B}.Release|x64.ActiveCfg = Release|x64
+		{24F88DC8-D388-43DF-8F84-D7E92D54252B}.Release|x64.Build.0 = Release|x64
+		{763E8103-7AC1-4940-882E-69B7A6B66D73}.Debug|x64.ActiveCfg = Debug|x64
+		{763E8103-7AC1-4940-882E-69B7A6B66D73}.Debug|x64.Build.0 = Debug|x64
+		{763E8103-7AC1-4940-882E-69B7A6B66D73}.Release|x64.ActiveCfg = Release|x64
+		{763E8103-7AC1-4940-882E-69B7A6B66D73}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
