@@ -78,6 +78,26 @@ namespace GameActor
             }
         }
 
+        public async Task<string> Get(string name)
+        {
+            var resultArray = new List<char[]>();
+            for (var i = 0; i < rows; i++) resultArray.Add(new char[columns]);
+
+            for (var i = 0; i < rows; i++)
+            {
+                for (var j = 0; j < columns; j++)
+                {
+                    var actorId = new ActorId($"{Id}{i}{j}");
+                    var theActor = ActorProxy.Create<IGameCell>(actorId, new Uri("fabric:/ConwaysActorApp/GameCellActorService"));
+                    var state = await theActor.GetState();
+                    resultArray[i][j] = state == CellState.Alive ? 'a' : 'b';
+                }
+            }
+
+            var resultstring = resultArray.Select(a => new string(a)).Aggregate((a, b) => a + "\n" + b);
+            return resultstring.ToString();
+        }
+
         public async Task<string> Initiate(string name, int rows, int columns)
         {
             if (initiated)
@@ -139,5 +159,6 @@ namespace GameActor
             // The update function here verifies that the incoming count is greater than the current count to preserve order.
             return this.StateManager.AddOrUpdateStateAsync("count", count, (key, value) => count > value ? count : value, cancellationToken);
         }
+
     }
 }

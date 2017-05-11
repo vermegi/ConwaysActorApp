@@ -94,11 +94,11 @@ namespace GameCell
 
         public Task<string> Initiate(string name, int row, int column)
         {
-            var rnd = new Random();
+            var rnd = new Random(System.DateTime.Now.Millisecond);
             this.name = name;
             this.row = row;
             this.column = column;
-            state = rnd.Next() % 2 == 2 ? CellState.Alive : CellState.Dead;
+            state = rnd.Next() % 2 == 0 ? CellState.Alive : CellState.Dead;
             var stateString = state == CellState.Alive ? "Alive" : "Dead";
             ActorEventSource.Current.ActorMessage(this, $"created cell at {row}-{column}: {stateString}");
             return Task.FromResult("done");

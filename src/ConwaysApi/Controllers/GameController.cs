@@ -1,4 +1,5 @@
 ﻿using ConwaysApi.Domain;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace ConwaysApi.Controllers
@@ -6,24 +7,25 @@ namespace ConwaysApi.Controllers
     [ServiceRequestActionFilter]
     public class GameController : ApiController 
     {
-        public string Get()
-        {
-            return "the game";
-        }
-
-        public void Post(string name, int rows, int columns)
+        public async Task<string> Get(string name)
         {
             var gameActor = new GameActorOrchestrator();
-            gameActor.Initiate(name, rows, columns);
+            return await gameActor.Get(name);
         }
 
-        public void Put(string name, string message)
+        public async void Post(string name, int rows, int columns)
+        {
+            var gameActor = new GameActorOrchestrator();
+            await gameActor.Initiate(name, rows, columns);
+        }
+
+        public async void Put(string name, string message)
         {
             switch (message)
             {
                 case "doTurn":
                     var gameOrchestrator = new GameActorOrchestrator();
-                    gameOrchestrator.DoTurn(name);
+                    await gameOrchestrator.DoTurn(name);
                     break;
 
             }
