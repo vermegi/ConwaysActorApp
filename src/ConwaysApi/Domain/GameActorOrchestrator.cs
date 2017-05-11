@@ -7,22 +7,18 @@ namespace ConwaysApi.Domain
 {
     class GameActorOrchestrator
     {
-        private int columns;
-        private int rows;
-        private string name;
-
-        public GameActorOrchestrator(string name, int rows, int columns)
-        {
-            this.name = name;
-            this.rows = rows;
-            this.columns = columns;
-        }
-
-        internal async void Initiate()
+        internal async void Initiate(string name, int rows, int columns)
         {
             var actorId = new ActorId(name);
             var gameActor = ActorProxy.Create<IGameActor>(actorId, new Uri("fabric:/ConwaysActorApp/GameActorService"));
-            await gameActor.Initiate(rows, columns);
+            await gameActor.Initiate(name, rows, columns);
+        }
+
+        internal async void DoTurn(string name)
+        {
+            var actorId = new ActorId(name);
+            var gameActor = ActorProxy.Create<IGameActor>(actorId, new Uri("fabric:/ConwaysActorApp/GameActorService"));
+            await gameActor.DoTurn();
         }
     }
 }

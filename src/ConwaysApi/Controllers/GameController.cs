@@ -13,8 +13,20 @@ namespace ConwaysApi.Controllers
 
         public void Post(string name, int rows, int columns)
         {
-            var gameActor = new GameActorOrchestrator(name, rows, columns);
-            gameActor.Initiate();
+            var gameActor = new GameActorOrchestrator();
+            gameActor.Initiate(name, rows, columns);
+        }
+
+        public void Put(string name, string message)
+        {
+            switch (message)
+            {
+                case "doTurn":
+                    var gameOrchestrator = new GameActorOrchestrator();
+                    gameOrchestrator.DoTurn(name);
+                    break;
+
+            }
         }
     }
 }

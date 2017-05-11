@@ -22,6 +22,11 @@ namespace GameActor
     [StatePersistence(StatePersistence.Persisted)]
     internal class GameActor : Actor, IGameActor
     {
+        private int columns;
+        private bool initiated;
+        private int rows;
+        private bool turnBusy;
+
         /// <summary>
         /// Initializes a new instance of GameActor
         /// </summary>
@@ -32,18 +37,70 @@ namespace GameActor
         {
         }
 
-        public async Task<string> Initiate(int rows, int columns)
+        public async Task<string> DoTurn()
         {
+            if (!initiated)
+                throw new InvalidOperationException("Initiate this game first");
+            if (turnBusy)
+                throw new InvalidOperationException("I'm still calculating, hold on plz");
+
+            turnBusy = true;
+
+            await CalculateNextStates();
+            await GoToNextStates();
+
+            turnBusy = false;
+            return await Task.FromResult("running the turn");
+        }
+
+        private async Task GoToNextStates()
+        {
+            Parallel.For(0, rows, i => {
+                Parallel.For(0, columns, async j =>
+                {
+                    var actorId = new ActorId($"{Id}{i}{j}");
+                    var theActor = ActorProxy.Create<IGameCell>(actorId, new Uri("fabric:/ConwaysActorApp/GameCellActorService"));
+                    await theActor.GotoNextState();
+                });
+            });
+        }
+
+        private async Task CalculateNextStates()
+        {
+            for (var i = 0; i < rows; i++)
+            {
+                for (var j = 0; j < columns; j++)
+                {
+                    var actorId = new ActorId($"{Id}{i}{j}");
+                    var theActor = ActorProxy.Create<IGameCell>(actorId, new Uri("fabric:/ConwaysActorApp/GameCellActorService"));
+                    await theActor.CalculateNextState(rows, columns);
+                }
+            }
+        }
+
+        public async Task<string> Initiate(string name, int rows, int columns)
+        {
+            if (initiated)
+                return await Task.FromResult("nothing to do here");
+
+            this.rows = rows;
+            this.columns = columns;
             for (int i = 0; i < rows; i++)
             {
                 for (int j = 0; j < columns; j++)
                 {
                     var actorId = new ActorId($"{Id}{i}{j}");
                     var gameCell = ActorProxy.Create<IGameCell>(actorId, new Uri("fabric:/ConwaysActorApp/GameCellActorService"));
-                    await gameCell.Initiate(i, j);
+                    await gameCell.Initiate(name, i, j);
                 }
             }
+            initiated = true;
             return await Task.FromResult("done");
+        }
+
+        public async Task TurnDone()
+        {
+            turnBusy = false;
         }
 
         /// <summary>

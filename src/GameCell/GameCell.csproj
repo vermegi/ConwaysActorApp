@@ -109,6 +109,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GameActor.Interfaces\GameActor.Interfaces.csproj">
+      <Project>{763e8103-7ac1-4940-882e-69b7a6b66d73}</Project>
+      <Name>GameActor.Interfaces</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GameCell.Interfaces\GameCell.Interfaces.csproj">
       <Project>{656C11A2-1FE3-45A0-8067-4CF4B39F6864}</Project>
       <Name>GameCell.Interfaces</Name>

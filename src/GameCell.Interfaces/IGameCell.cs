@@ -25,6 +25,15 @@ namespace GameCell.Interfaces
         /// <param name="count"></param>
         /// <returns></returns>
         Task SetCountAsync(int count, CancellationToken cancellationToken);
-        Task<string> Initiate(int row, int column);
+        Task<string> Initiate(string name, int row, int column);
+        Task CalculateNextState(int rows, int columns);
+        Task<CellState> GetState();
+        Task GotoNextState();
+    }
+
+    public enum CellState
+    {
+        Dead,
+        Alive
     }
 }

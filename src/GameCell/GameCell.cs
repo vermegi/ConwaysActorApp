@@ -3,6 +3,10 @@ using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Runtime;
 using GameCell.Interfaces;
+using System;
+using System.Collections.Generic;
+using Microsoft.ServiceFabric.Actors.Client;
+using GameActor.Interfaces;
 
 namespace GameCell
 {
@@ -19,6 +23,9 @@ namespace GameCell
     {
         private int column;
         private int row;
+        private string name;
+        private CellState state;
+        private CellState nextState;
 
         /// <summary>
         /// Initializes a new instance of GameCell
@@ -30,11 +37,70 @@ namespace GameCell
         {
         }
 
-        public Task<string> Initiate(int row, int column)
+        public async Task CalculateNextState(int rows, int columns)
         {
+            var aliveNeighbourCount = 0;
+
+            var neighbourIds = GetNeighbourIds(rows, columns);
+
+            foreach (var neighbourId in neighbourIds)
+            {
+                var actorId = new ActorId($"{name}{neighbourId}");
+                var neighbour = ActorProxy.Create<IGameCell>(actorId, new Uri("fabric:/ConwaysActorApp/GameCellActorService"));
+                var state = await neighbour.GetState();
+                if (state == CellState.Alive)
+                    aliveNeighbourCount++;
+            }
+
+            if (state == CellState.Alive && aliveNeighbourCount < 2) nextState = CellState.Dead;
+            else if (state == CellState.Alive && (aliveNeighbourCount == 2 || aliveNeighbourCount == 3)) nextState = CellState.Alive;
+            else if (state == CellState.Alive && aliveNeighbourCount > 3) nextState = CellState.Dead;
+            else if (state == CellState.Dead && aliveNeighbourCount == 3) nextState = CellState.Alive;
+        }
+
+        private IEnumerable<string> GetNeighbourIds(int rows, int columns)
+        {
+            var west = column--;
+            var north = row--;
+            var east = column++;
+            var south = row++;
+
+            // w
+            if (west >= 0) yield return $"{row}{west}";
+            // nw
+            if (west >= 0 && north >= 0) yield return $"{north}{west}";
+            // n
+            if (north >= 0) yield return $"{north}{column}";
+            // ne
+            if (north >= 0 && east < columns) yield return $"{north}{east}";
+            // e
+            if (east < columns) yield return $"{row}{east}";
+            // se
+            if (east < columns && south < rows) yield return $"{south}{east}";
+            // s
+            if (south < rows) yield return $"{south}{column}";
+            // sw
+            if (south < rows && west >= 0) yield return $"{south}{west}";
+        }
+
+        private string GetNextCellId(int rows, int columns)
+        {
+            var nextCol = column++;
+            var nextRow = row++;
+            if (nextCol < columns) return $"{row}{nextCol}";
+            if (nextRow < rows) return $"{nextRow}{0}";
+            else return string.Empty;
+        }
+
+        public Task<string> Initiate(string name, int row, int column)
+        {
+            var rnd = new Random();
+            this.name = name;
             this.row = row;
             this.column = column;
-            ActorEventSource.Current.ActorMessage(this, $"created cell at {row}-{column}");
+            state = rnd.Next() % 2 == 2 ? CellState.Alive : CellState.Dead;
+            var stateString = state == CellState.Alive ? "Alive" : "Dead";
+            ActorEventSource.Current.ActorMessage(this, $"created cell at {row}-{column}: {stateString}");
             return Task.FromResult("done");
         }
 
@@ -73,6 +139,16 @@ namespace GameCell
             // Requests are not guaranteed to be processed in order nor at most once.
             // The update function here verifies that the incoming count is greater than the current count to preserve order.
             return this.StateManager.AddOrUpdateStateAsync("count", count, (key, value) => count > value ? count : value, cancellationToken);
+        }
+
+        public Task<CellState> GetState()
+        {
+            return Task.FromResult(state);
+        }
+
+        public async Task GotoNextState()
+        {
+            state = nextState;
         }
     }
 }

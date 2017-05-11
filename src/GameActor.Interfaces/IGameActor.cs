@@ -15,7 +15,8 @@ namespace GameActor.Interfaces
         /// </summary>
         /// <returns></returns>
         Task<int> GetCountAsync(CancellationToken cancellationToken);
-        Task<string> Initiate(int rows, int columns);
+        Task<string> Initiate(string name, int rows, int columns);
+        Task<string> DoTurn();
 
         /// <summary>
         /// TODO: Replace with your own actor method.
@@ -23,5 +24,6 @@ namespace GameActor.Interfaces
         /// <param name="count"></param>
         /// <returns></returns>
         Task SetCountAsync(int count, CancellationToken cancellationToken);
+        Task TurnDone();
     }
 }
