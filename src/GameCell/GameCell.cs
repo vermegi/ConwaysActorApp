@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.ServiceFabric.Actors.Client;
 using GameActor.Interfaces;
+using System.Linq;
 
 namespace GameCell
 {
@@ -56,6 +57,7 @@ namespace GameCell
             else if (state == CellState.Alive && (aliveNeighbourCount == 2 || aliveNeighbourCount == 3)) nextState = CellState.Alive;
             else if (state == CellState.Alive && aliveNeighbourCount > 3) nextState = CellState.Dead;
             else if (state == CellState.Dead && aliveNeighbourCount == 3) nextState = CellState.Alive;
+            ActorEventSource.Current.ActorMessage(this, $"--- checked cell at {row}-{column} --- neighbourcount: {neighbourIds.Count()} aliveneighbourcount: {aliveNeighbourCount} current: {state}, next: {nextState}");
         }
 
         private IEnumerable<string> GetNeighbourIds(int rows, int columns)
@@ -94,7 +96,7 @@ namespace GameCell
 
         public Task<string> Initiate(string name, int row, int column)
         {
-            var rnd = new Random(System.DateTime.Now.Millisecond);
+            var rnd = new Random(DateTime.Now.Millisecond);
             this.name = name;
             this.row = row;
             this.column = column;
